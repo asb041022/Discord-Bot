@@ -4,6 +4,7 @@ import random
 #os : 파일 경로를 다루게 도와줌
 import os
 from data import survivors
+from data import hunters
 
 #봇 기본 세팅
 class MyBot(discord.Client):
@@ -17,7 +18,7 @@ class MyBot(discord.Client):
         print(f'Logged in as {self.user.name}')
         try:
             #안돌아가길래 그냥 디코 서버 아이디 지정 형식으로 했는데.. 수정 필요
-            guild = discord.Object(id=1382834320343040101)
+            guild = discord.Object(id=#)
             
             # 명령어 동기화 (구동 방식 이해 못함. 추후 공부 필요)
             self.tree.copy_global_to(guild=guild)
@@ -34,30 +35,48 @@ bot = MyBot()
 async def survivor_draw(interaction: discord.Interaction):
     number = random.randint(1, 51)
     
-    character_file_name = survivors.get(number, "알 수 없는 캐릭터")
+    survivor_file_name = survivors.get(number, "알 수 없는 캐릭터")
+    file_name = f"{survivor_file_name}.jpg"
     
-    file_name = f"{character_file_name}.jpg"
-    
-    img_folder = r"D:\discordBot\생추봇_ver1\생존자Img"
-    img_path = os.path.join(img_folder, file_name)
+    survivor_img_folder = r"D:\discordBot\생추봇_ver1\생존자Img"
+    survivor_img_path = os.path.join(survivor_img_folder, file_name)
     
     #이미지
-    if os.path.exists(img_path):
-        file = discord.File(img_path, filename="result.jpg") 
+    if os.path.exists(survivor_img_path):
+        file = discord.File(survivor_img_path, filename="result.jpg") 
         await interaction.response.send_message(
-            content=f"🎲 생존자 추첨 결과: **{character_file_name}** 입니다!",
+            content=f"🎲 생존자 추첨 결과: **{survivor_file_name}** 입니다!",
             file=file
         )
     else:
         await interaction.response.send_message(
-            content=f"🎲 생존자 추첨 결과: **{character_file_name}** 입니다!\n(이미지를 찾을 수 없습니다: {file_name})"
+            content=f"🎲 생존자 추첨 결과: **{survivor_file_name}** 입니다!\n(이미지를 찾을 수 없습니다: {file_name})"
         )
 
 #2. 감시자 추첨
 @bot.tree.command(name="감시자추첨", description="랜덤으로 감시자를 추첨합니다.")
 async def hunter_draw(interaction: discord.Interaction):
     number = random.randint(1, 34)
-    await interaction.response.send_message(f"👁️ 감시자 추첨 결과: **{number}**번 입니다!")
+
+    hunter_file_name = hunters.get(number, "알 수 없는 캐릭터")
+    file_name = f"{hunter_file_name}.jpg"
+
+    hunter_img_folder = r"D:\discordBot\생추봇_ver1\감시자Img"
+    hunter_img_path = os.path.join(hunter_img_folder, file_name)
+    
+    # await interaction.response.send_message(f"👁️ 감시자 추첨 결과: **{number}**번 입니다!")
+    
+    #이미지
+    if os.path.exists(hunter_img_path):
+        file = discord.File(hunter_img_path, filename="result.jpg") 
+        await interaction.response.send_message(
+            content=f"🎲 감시자 추첨 결과: **{hunter_file_name}** 입니다!",
+            file=file
+        )
+    else:
+        await interaction.response.send_message(
+            content=f"🎲 감시자 추첨 결과: **{hunter_file_name}** 입니다!\n(이미지를 찾을 수 없습니다: {file_name})"
+        )
 
 #실행
-bot.run('#')
+bot.run('')
