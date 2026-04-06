@@ -12,8 +12,24 @@ class Client(discord.Client):
     # on_message : 서버 사람이 새 채팅을 보낼때마다 자동으로 동작하는 함수
     #  self = 봇 자기 자신, message = 디코 서버 내 발생한 메제시의 모든 정보    
     async def on_message(self, message):
-		    # author = 메시지를 보낸 유저는 누구?, content = 그 사람이 보낸 메시지 내용은?
+		
+        # author = 메시지를 보낸 유저는 누구?, content = 그 사람이 보낸 메시지 내용은?
         print(f'Message from {message.author}: {message.content}')
+        
+        #메시지를 보낸 유저 = self = 봇 자신일시 무시하라
+        if message.author == self.user: #방어코드
+            return
+        #그게 아닌, 일반 유저가 hello 로 시작하는 텍스트를 보낼시 메시지 전송
+        if message.content.startswith('hello'):
+            await message.channel.send(f'Hi there {message.author}')
+
+    #reaction = 어떤 이모지가 어느 메시지에 달림?, user = 누가 달았음?
+    async def on_reaction_add(self, reaction, user):
+        #비동기 처리해서 누가 이모지 달면 텍스트 보낼게~
+        await reaction.message.channel.send('You reacted')
+
+
+
 
 
 # 권한 설정
@@ -26,6 +42,6 @@ intents.message_content = True
 Client = Client(intents=intents)
 # 
 #봇 토큰 입력
-Client.run('토큰주소')
+Client.run('')
 
 
